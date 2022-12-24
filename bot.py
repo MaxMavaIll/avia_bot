@@ -3,7 +3,7 @@ from distutils.command.config import config
 import logging
 
 from aiogram import Bot, Dispatcher, types
-from tgbot.hendler.users.router import user_router
+from tgbot.hendler.private.users.router import user_router
 from tgbot.config import load_config
 
 logger = logging.getLogger(__name__)
@@ -21,6 +21,7 @@ async def main():
     config = load_config(".env")
     bot = Bot(token=config.tg_bot.token, parse_mode="HTML")
     dp = Dispatcher()
+    dp['config'] = config
     
     for router in [
         # admin_router,
