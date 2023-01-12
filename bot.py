@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 
 async def main():
     logging.basicConfig(
-        level=logging.INFO,
+        level=logging.DEBUG,
         format=u'%(filename)s:%(lineno)d #%(levelname)-8s [%(asctime)s] - %(name)s - %(message)s',
     )
     logger.info("Starting bot")
@@ -21,6 +21,7 @@ async def main():
     config = load_config(".env")
     bot = Bot(token=config.tg_bot.token, parse_mode="HTML")
     dp = Dispatcher()
+    dp['bot'] = bot
     dp['config'] = config
     
     for router in [
