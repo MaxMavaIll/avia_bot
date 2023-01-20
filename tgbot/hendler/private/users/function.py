@@ -1,5 +1,6 @@
 import phonenumbers, logging, datetime
 from email_validator import validate_email, EmailNotValidError
+import config
 
 
 async def create_count_people(data: str=None):
@@ -11,6 +12,7 @@ async def create_count_people(data: str=None):
         data['count_people']['day'] = ''
         data['count_people']['time'] = []
         data['count_people']['duration'] = []
+        data['count_people']['price'] = ''
         data['count_people']['comment'] = ''
         data['count_people']['gift'] = ''
 
@@ -62,7 +64,7 @@ def time(time: list = [], duration: list = []) -> str:
         
         t = datetime.datetime.utcfromtimestamp(time[index]).hour
 
-        if duration[index] == 60:
+        if duration[index] == '60':
             first = last = t
             if time[index] == time[-1]:
                 message += f'{t}:00-{t+1}:00'
@@ -78,7 +80,7 @@ def time(time: list = [], duration: list = []) -> str:
         #     first = last = t
 
         
-        elif duration[index] == 30:
+        elif duration[index] == '30':
             first = last = t
             if time[index] == time[-1]:
                 message += f'{t}:00-{t}:30'
@@ -86,3 +88,18 @@ def time(time: list = [], duration: list = []) -> str:
             message += f'{first}:00-{last}:30, '
 
     return message
+
+def get_amount( list = [], duration: list = []) -> int:
+    sum = 0
+    for index in range(len(list)):
+        if duration[index] == config.agree_time[0]:
+            sum += config.amount[0]
+        if duration[index] == config.agree_time[1]:
+            sum += config.amount[1]
+
+    return sum
+
+def gift(gift: str = None):
+    if gift == 'on':
+        return "Так"
+    return "Ні"

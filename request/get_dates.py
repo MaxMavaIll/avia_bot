@@ -52,9 +52,10 @@ def get_time(day_dttm):
                 return mass
 
 
-get = requests.get(url=url)
-data = json.loads(get.text)
-print(data['dates'])
+    
+# get = requests.get(url=url)
+# data = json.loads(get.text)
+# print(data)
 # now = datetime.utcnow().timestamp()
 # epoch = datetime(1970, 1, 1)
 # posix_timestamp_millis = (now - epoch) // timedelta(milliseconds=1)

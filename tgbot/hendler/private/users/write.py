@@ -112,8 +112,9 @@ async def create_checker(callback: CallbackQuery, state: FSMContext, bot: Bot):
     day = data['count_people']['day']
     time = data['count_people']['time']
     duration = data['count_people']['duration']
-    now = datetime.utcnow()
-    
+    comment = data['count_people']['comment']
+    gift = data['count_people']['gift']
+
     free_time = await function.get_free_time()
     if free_time is None:
         await callback.message.edit_text("Цей день вже зайнятий", reply_markup = to_menu())
@@ -127,14 +128,15 @@ async def create_checker(callback: CallbackQuery, state: FSMContext, bot: Bot):
 
     elif hour != 'next':
         logging.info(f"{data, day, time}")
-        if hour in ['30', '60']:
+        if hour in config.agree_time:
 
-            duration.append(int(hour))  
-            await callback.message.edit_text(f"Вибраний час: \n{function.time(time, duration)}", reply_markup=list_hours(day, get_time(day) , time, True ))
+            duration.append(hour)  
+            amount = function.get_amount(time, duration)
+            await callback.message.edit_text(f"Ціна {amount} грн\nВибраний час: \n{function.time(time, duration)}", reply_markup=list_hours(day, get_time(day) , time, True ))
             return
 
         time.append(float(hour))      
-        await callback.message.edit_text(f"Уточніть : ",reply_markup=enter_haft_hour())
+        await callback.message.edit_text(f"Уточніть: ",reply_markup=enter_haft_hour())
         
     
     elif hour == 'next' and time == []:
@@ -143,12 +145,22 @@ async def create_checker(callback: CallbackQuery, state: FSMContext, bot: Bot):
                                          reply_markup=list_hours(day, get_time(day) ))
 
     else:
+        # await callback.message.edit_text("<b>Тут ти можеш добавити коментар (це не обов'язкове поле)</b>\n\n", 
+        #                                 reply_markup= )
+
+        data['count_people']['price'] = amount = function.get_amount(time, duration)
+        output_day = day.strftime("%d.%m.%y")
+        gift = function.gift(gift)
         await callback.message.edit_text("<b>Провірь введені дані</b>\n\n"
                                          f"Iм'я: <i>{name}</i>  \n"
-                                        #  f"Число: <i>{name}</i> "
+                                         f"Число: <i>{output_day}</i>\n"
                                          f"Час: <i>{function.time(time, duration)}</i>\n"
                                          f"Email: <i>{email}</i>\n"
-                                         f"Номер телефону: <i>{nomber}</i>\n", reply_markup=check_input_data())
+                                         f"Номер телефону: <i>{nomber}</i>\n"
+                                         f"Загальна сума: {amount} грн\n"
+                                         f"**Якщо бажаєте додати коментарій перейдіть в розділ 'Редагувати'**\n"
+                                         f"Коментарій: {comment}\n"
+                                         f"Подарунковий сертифікат: {gift}", reply_markup=check_input_data())
 
     logging.debug(f"6. {data}")
 
@@ -160,9 +172,10 @@ async def create_checker(callback: CallbackQuery, state: FSMContext, bot: Bot):
     message = callback.data.split('&')[-1]
     day = data["count_people"]["day"]
     time = data["count_people"]["time"]
+    duration = data["count_people"]["duration"]
 
     if message == 'edit':
-        await callback.message.edit_text("Вибири що ти хочеш змінити", reply_markup=edit(data["count_people"], function.time(data["count_people"]["time"])))
+        await callback.message.edit_text("Вибири що ти хочеш змінити", reply_markup=edit(data["count_people"], function.time(time, duration )))
     
     elif message == 'name':
         await callback.message.edit_text("Будь ласка ведіть нове ім'я:")
@@ -180,7 +193,7 @@ async def create_checker(callback: CallbackQuery, state: FSMContext, bot: Bot):
         pass
 
     elif message == 'time':
-        await callback.message.edit_text(f"Вибраний час: \n{function.time(time)}", reply_markup=list_hours_edit(day, get_time(day)))
+        await callback.message.edit_text(f"Вибраний час: \n{function.time(time, duration)}", reply_markup=list_hours_edit(day, get_time(day)))
 
     
 

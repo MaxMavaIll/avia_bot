@@ -18,13 +18,16 @@ async def Get_name(message: Message, state: FSMContext, bot: Bot):
     name = message.text.title()
     last_name = data['count_people']['name']
     new_name = name
-    data['count_people']['name'] = name
+    data['count_people']['name'] = new_name
+    time = data["count_people"]["time"]
+    duration = data["count_people"]["duration"]
 
     await asyncio.sleep(1)
     await message.delete()
+    await state.update_data(data)
     await bot.edit_message_text("Ім'я змінено\n"
                                 f"<b>{last_name} -> {new_name}</b>",
-                                message.from_user.id, data['id'], reply_markup=edit(data["count_people"], function.time(data["count_people"]["time"])))
+                                message.from_user.id, data['id'], reply_markup=edit(data["count_people"], function.time(time, duration)))
 
 @user_router.message(state=Write.edit_nomber)
 async def Get_name(message: Message, state: FSMContext, bot: Bot):
@@ -33,6 +36,8 @@ async def Get_name(message: Message, state: FSMContext, bot: Bot):
     last_name = data['count_people']['nomber']
     new_name = nomber
     data['count_people']['nomber'] = nomber
+    time = data["count_people"]["time"]
+    duration = data["count_people"]["duration"]
 
     await asyncio.sleep(1)
     await message.delete()
@@ -41,10 +46,10 @@ async def Get_name(message: Message, state: FSMContext, bot: Bot):
         await bot.edit_message_text("Ваш номер телефону не відповідає стандартам\n"
                                 "Введіть номер телефону ще раз:", message.from_user.id, data['id'], reply_markup=to_menu(back=True, text='спробувати ще раз', back_to='edit&nomber') )
         return
-
+    await state.update_data(data)
     await bot.edit_message_text("Номер змінений\n"
                                 f"<b>{last_name} -> {new_name}</b>",
-                                message.from_user.id, data['id'], reply_markup=edit(data["count_people"], function.time(data["count_people"]["time"])))
+                                message.from_user.id, data['id'], reply_markup=edit(data["count_people"], function.time(time, duration)))
 
 @user_router.message(state=Write.edit_email)
 async def Get_name(message: Message, state: FSMContext, bot: Bot):
@@ -53,6 +58,8 @@ async def Get_name(message: Message, state: FSMContext, bot: Bot):
     last_name = data['count_people']['email']
     new_name = email
     data['count_people']['email'] = email
+    time = data["count_people"]["time"]
+    duration = data["count_people"]["duration"]
 
     await asyncio.sleep(1)
     await message.delete()
@@ -61,7 +68,7 @@ async def Get_name(message: Message, state: FSMContext, bot: Bot):
         await bot.edit_message_text("Ваша пошта не відповідає стандарту\n"
                                 "Будь ласка, введіть Вашу пошту ще раз:", message.from_user.id, data['id'], reply_markup=to_menu(back=True, text='спробувати ще раз', back_to='edit&email'))
         return
-        
+    await state.update_data(data)
     await bot.edit_message_text("Email змінено\n"
                                 f"<b>{last_name} -> {new_name}</b>", 
-                                message.from_user.id, data['id'], reply_markup=edit(data["count_people"], function.time(data["count_people"]["time"])))
+                                message.from_user.id, data['id'], reply_markup=edit(data["count_people"], function.time(time, duration)))

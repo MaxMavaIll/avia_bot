@@ -63,7 +63,6 @@ def list_hours(day: dt = None, time_work: list = None, choose_time: list = [], b
                 InlineKeyboardButton(text=f"Далі", callback_data=f"hour&next")
                 ]
     
-    now = dt.utcnow()
     # if now.day is day.day:
     #     # available_time = range(now.hour+2, time_work[-1]+1)
     #     for time_hour in time_work:
@@ -158,24 +157,32 @@ def list_hours_edit(day: int = None, time_work: list = None, choose_time: list =
 
     
 
-    now = dt.now()
-    t = tm(hour=time_work[0])
+    # t = tm(hour=time_work[0])
     
-    if day is now.day:
-        available_time = range(now.hour+2, time_work[-1]+1)
-        for time_hour in range(len(available_time)):
-            time = (now + timedelta(hours=time_hour)).hour + 2
+    # if day is now.day:
+    #     available_time = range(now.hour+2, time_work[-1]+1)
+    #     for time_hour in range(len(available_time)):
+    #         time = (now + timedelta(hours=time_hour)).hour + 2
 
-            if time not in choose_time:
-                builder.add( InlineKeyboardButton(text=f"{time}:00", callback_data=f"hour&{time}")) 
+    #         if time not in choose_time:
+    #             builder.add( InlineKeyboardButton(text=f"{time}:00", callback_data=f"hour&{time}")) 
             
-    else:
+    # else:
         
-        for time_hour in range(len(time_work)+1):
-            time =  time_work[0] + time_hour
-            if time not in choose_time:
-                builder.add( InlineKeyboardButton(text=f"{time}:00", callback_data=f"hour&{time}") )
+    #     for time_hour in range(len(time_work)+1):
+    #         time =  time_work[0] + time_hour
+    #         if time not in choose_time:
+    #             builder.add( InlineKeyboardButton(text=f"{time}:00", callback_data=f"hour&{time}") )
+    for time_hour in time_work:
+        output = time_hour.strftime("%H:%M")
+        output_t = time_hour.timestamp()
+
+        if output_t not in choose_time:
+            builder.add( InlineKeyboardButton(text=f"{output}", callback_data=f"hour&{output_t}") )
     
+    if back:
+        menu.insert(2, InlineKeyboardButton(text="Видалити вибраний час", callback_data=f"hour&clear"))
+
     if back == 'hour':
         menu.insert(2, InlineKeyboardButton(text="Видалити вибраний час", callback_data=f"hour&clear"))
         # builder.button(text="Видалити вибраний час", callback_data=f"hour&clear")
