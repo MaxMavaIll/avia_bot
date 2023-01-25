@@ -2,8 +2,13 @@ import asyncio
 from distutils.command.config import config
 import logging
 
+from scheduler.base import setup_scheduler
+from scheduler.job import add_user_checker
+
+from datetime import datetime
 from aiogram import Bot, Dispatcher, types
 from tgbot.hendler.private.users.router import user_router
+from tgbot.hendler.group.users.router import user_router_g
 from tgbot.config import load_config
 
 logger = logging.getLogger(__name__)
@@ -13,7 +18,7 @@ logger = logging.getLogger(__name__)
 
 async def main():
     logging.basicConfig(
-        level=logging.DEBUG,
+        level=logging.INFO,
         format=u'%(filename)s:%(lineno)d #%(levelname)-8s [%(asctime)s] - %(name)s - %(message)s',
     )
     logger.info("Starting bot")
@@ -21,17 +26,25 @@ async def main():
     config = load_config(".env")
     bot = Bot(token=config.tg_bot.token, parse_mode="HTML")
     dp = Dispatcher()
-    dp['bot'] = bot
     dp['config'] = config
-    
+    scheduler = setup_scheduler(bot)
+
     for router in [
         # admin_router,
         # checker_router,
         user_router,
+        user_router_g
     ]:
         dp.include_router(router)
     
-    
+    scheduler.add_job(
+                    add_user_checker,
+                    "interval",
+                    minutes=1,
+                    next_run_time=datetime.now(),
+                    replace_existing=True
+                )
+    scheduler.start()
     
     await dp.start_polling(bot)
 
