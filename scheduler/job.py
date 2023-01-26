@@ -34,10 +34,11 @@ async def add_user_checker(bot: Bot):
             for t in time:
                 t = datetime.utcfromtimestamp(t).strftime("%H:%M")
                 for id in env.tg_bot.admin_ids:
+                    logging.info(f"I sent admin with id: {id}")
                     await bot.send_message(id, f"Хтось записався на {t}")
         else:
+            id = env.tg_bot.admin_ids
             logging.info(f"\n\nit`s ok\n")
-
         # for time in new_data:
         #     time = datetime.utcfromtimestamp(time)
         #     logging.info(f"time {time}")

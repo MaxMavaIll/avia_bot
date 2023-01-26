@@ -3,3 +3,4 @@ venv/
 .env
 token
 test.py
+data/last_data.json
