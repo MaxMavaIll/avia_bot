@@ -10,6 +10,7 @@ from scheduler.funtion import new_registri_time, new_day, create_dict
 
 
 path_save_file = "data/pack_for_send.json"
+time_del_message = 60 * 60
 
 #from schedulers.exceptions import raise_error
 
@@ -41,7 +42,7 @@ async def add_user_checker(bot: Bot):
                 for id in env.tg_bot.admin_ids:
                     logging.info(f"I sent admin with id: {id}")
                     message_bot = await bot.send_message(id, f"Хтось записався на {t}")
-                    await asyncio.sleep(5)
+                    await asyncio.sleep(time_del_message)
                     await bot.delete_message(chat_id=message_bot.chat.id, message_id=message_bot.message_id)
         else:
             id = env.tg_bot.admin_ids
