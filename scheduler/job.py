@@ -1,5 +1,5 @@
 import json, os
-import logging
+import logging, asyncio
 from request.data import get_dates
 from datetime import datetime 
 
@@ -23,9 +23,14 @@ async def add_user_checker(bot: Bot):
     keys = list(new_data["dates"].keys())[0]
     new_data = new_data["dates"][keys]
 
-    if type(new_data) == type(dict()):
-        new_data = list(new_data.values())
     
+
+    if type(new_data) == type(dict()):
+        logging.info(f"new_data {type(new_data)}")
+        new_data = list(new_data.values())
+
+    logging.info(f"new_data {new_data} {type(new_data)}")
+
 
     if new_day(keys):
         time = new_registri_time(new_data)
@@ -35,7 +40,9 @@ async def add_user_checker(bot: Bot):
                 t = datetime.utcfromtimestamp(t).strftime("%H:%M")
                 for id in env.tg_bot.admin_ids:
                     logging.info(f"I sent admin with id: {id}")
-                    await bot.send_message(id, f"Хтось записався на {t}")
+                    message_bot = await bot.send_message(id, f"Хтось записався на {t}")
+                    await asyncio.sleep(5)
+                    await bot.delete_message(chat_id=message_bot.chat.id, message_id=message_bot.message_id)
         else:
             id = env.tg_bot.admin_ids
             logging.info(f"\n\nit`s ok\n")
