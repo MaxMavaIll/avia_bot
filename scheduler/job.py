@@ -24,6 +24,7 @@ async def add_user_checker(bot: Bot):
     # keys = list(new_data["dates"].keys())[0]
     # new_data = new_data["dates"][key]
     new_datas = new_data["dates"]
+    first_day = list(new_datas.keys())[0]
     for key, new_data in new_datas.items():
 
 
@@ -41,14 +42,19 @@ async def add_user_checker(bot: Bot):
         if time:
             for t in time:
                 t = datetime.utcfromtimestamp(t).strftime("%d.%m.%Y o %H:%M")
+                m = env.tg_bot.admin_ids
                 for id in env.tg_bot.admin_ids:
-                    logging.info(f"I sent admin with id: {id}")
-                    
-                    text = f"""
-                    Шановний клієнте, дякуємо за  замовлення польоту на авіасимуляторі <b>Боїнг 737</b>!\nЧекаємо Вас {t} за адресою: вул. Герцена, 35.\nБажаємо гарного відпочинку та приємних вражень! 
-                    """
-                    message_bot = await bot.send_message(id, text)
-                
+                    if id in [env.tg_bot.admin_ids[0]]:
+                        logging.info(f"I sent admin with id: {id}")
+                        
+                        text = f"""
+                        Шановний клієнте, дякуємо за  замовлення польоту на авіасимуляторі <b>Боїнг 737</b>!\nЧекаємо Вас {t} за адресою: вул. Герцена, 35.\nБажаємо гарного відпочинку та приємних вражень! 
+                        """
+                        message_bot = await bot.send_message(id, text)
+                    elif key == first_day:
+                        first_day = await bot.send_message(id, f"Хтось записався на <b>{t}</b>")
+
+
                     # message_bot = await bot.send_message(id, f"Хтось записався на <b>{t}</b>")
                     # await asyncio.sleep(time_del_message)
                     # await bot.delete_message(chat_id=message_bot.chat.id, message_id=message_bot.message_id)
