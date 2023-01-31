@@ -6,7 +6,7 @@ def check_new_hour(last_data: dict, key: str|int):
     last_time = datetime.datetime.fromtimestamp(last_data["time"])
     now_time = datetime.datetime.now()
 
-    if ( now_time.hour - last_time.hour) == 1:
+    if ( now_time.hour - last_time.hour) >= 1:
         del last_data[key][0]
 
     
@@ -24,12 +24,13 @@ def get_last_data():
     
     return last_data
 
-def new_registri_time(new_data: list):
+def new_registri_time(new_data: list, key: str):
 
     last_data = get_last_data()
-    key = list(last_data.keys())[0]
-    check_new_hour(last_data, key)
-    last_data = last_data[key]
+    # key = list(last_data.keys())[0]
+    if last_data != {}:
+        check_new_hour(last_data, key)
+        last_data = last_data[key]
 
     mass = []
     for time in last_data:
@@ -45,10 +46,14 @@ def new_day(day: datetime):
         return False
     return True
 
-def create_dict(key, value):
+def create_dict(key, all_data, value):
+    # time = datetime.datetime.now()
+    # time = datetime.datetime.timestamp(time)
+    
+    all_data[key] = value
+    # a["time"] = time
+
+def add_last_update_time(all_data: dict):
     time = datetime.datetime.now()
     time = datetime.datetime.timestamp(time)
-    a = dict()
-    a[key] = value
-    a["time"] = time
-    return a
+    all_data["time"] = time
