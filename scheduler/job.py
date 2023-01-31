@@ -25,6 +25,7 @@ async def add_user_checker(bot: Bot):
     # new_data = new_data["dates"][key]
     new_datas = new_data["dates"]
     first_day = list(new_datas.keys())[0]
+    second_day = list(new_datas.keys())[1]
     for key, new_data in new_datas.items():
 
 
@@ -44,14 +45,15 @@ async def add_user_checker(bot: Bot):
                 t = datetime.utcfromtimestamp(t).strftime("%d.%m.%Y o %H:%M")
                 m = env.tg_bot.admin_ids
                 for id in env.tg_bot.admin_ids:
-                    if id in [env.tg_bot.admin_ids[0]]:
+                    if id in env.tg_bot.get_all_time:
                         logging.info(f"I sent admin with id: {id}")
                         
                         text = f"""
                         Шановний клієнте, дякуємо за  замовлення польоту на авіасимуляторі <b>Боїнг 737</b>!\nЧекаємо Вас {t} за адресою: вул. Герцена, 35.\nБажаємо гарного відпочинку та приємних вражень! 
                         """
                         message_bot = await bot.send_message(id, text)
-                    elif key == first_day:
+                    elif key in [first_day, second_day]:
+                        logging.info(f"I sent admin with id: {id}")
                         first_day = await bot.send_message(id, f"Хтось записався на <b>{t}</b>")
 
 
