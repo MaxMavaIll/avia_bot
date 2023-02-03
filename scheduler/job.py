@@ -5,7 +5,7 @@ from datetime import datetime
 
 from aiogram import Bot
 from tgbot.config import load_config
-from scheduler.funtion import new_registri_time, new_day, create_dict, check_existing_file, add_last_update_time
+from scheduler import funtion as f # new_registri_time, create_dict, check_existing_file, add_last_update_time, delete_previous_hour
 # from aiogram.dispatcher.fsm.storage.redis import RedisStorage
 
 
@@ -26,6 +26,11 @@ async def add_user_checker(bot: Bot):
     new_datas = new_data["dates"]
     first_day = list(new_datas.keys())[0]
     second_day = list(new_datas.keys())[1]
+
+    f.del_old_day(first_day)
+    f.add_new_day(new_datas)
+    f.delete_previous_hour(first_day)
+
     for key, new_data in new_datas.items():
 
 
@@ -37,9 +42,9 @@ async def add_user_checker(bot: Bot):
 
 
         # if new_day(key):
-        check_existing_file("data/last_data.json")
+        f.check_existing_file("data/last_data.json")
 
-        time = new_registri_time(new_data, key)
+        time = f.new_registri_time(new_data, key)
         if time:
             for t in time:
                 t = datetime.utcfromtimestamp(t).strftime("%d.%m.%Y o %H:%M")
@@ -64,8 +69,10 @@ async def add_user_checker(bot: Bot):
             logging.info(f"{key} it`s ok")
 
 
-        create_dict(key, new_datas, new_data)
-    add_last_update_time(new_datas)
+        f.create_dict(key, new_datas, new_data) # Перезапис 
+        # delete_previous_hour(key)
+    f.add_last_update_time(new_datas) # Додавання часу коли була зроблена запис
+    # del_old_day()
     with open('data/last_data.json', "w") as file:
         json.dump(new_datas, file)
 
