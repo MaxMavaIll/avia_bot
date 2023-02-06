@@ -46,6 +46,7 @@ async def main():
                 )
     scheduler.start()
     
+
     await dp.start_polling(bot)
 
 
