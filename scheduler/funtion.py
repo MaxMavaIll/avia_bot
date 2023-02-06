@@ -3,11 +3,11 @@ from os.path import abspath, exists
 
 def delete_previous_hour( first_day: str|int):
     last_data = get_last_data()
-    now_time = datetime.datetime.utcnow()
+    now_time = datetime.datetime.now()
     
     for time in list(last_data[first_day]):
-        time_d = datetime.datetime.fromtimestamp(time)
-        logging.debug(f"new {now_time.hour } old {time_d.hour}")
+        time_d = datetime.datetime.utcfromtimestamp(time)
+        logging.debug(f"new {now_time.hour} old {time_d.hour}")
         if (now_time.hour - time_d.hour) >= 1:
             print(first_day, time, last_data[first_day] )
             last_data[first_day].remove(time)
@@ -73,7 +73,7 @@ def create_dict(key, all_data, value):
     # a["time"] = time
 
 def add_last_update_time(all_data: dict):
-    time = datetime.datetime.utcnow()
+    time = datetime.datetime.now()
     time = datetime.datetime.timestamp(time)
     all_data["time"] = time
 
