@@ -1,4 +1,4 @@
-import json, datetime
+import json, datetime, logging
 from os.path import abspath, exists
 
 def delete_previous_hour( first_day: str|int):
@@ -6,12 +6,14 @@ def delete_previous_hour( first_day: str|int):
     now_time = datetime.datetime.now()
     
     for time in list(last_data[first_day]):
-        time_d = datetime.datetime.fromtimestamp(time)
+        time_d = datetime.datetime.utcfromtimestamp(time)
+        logging.debug(f"new {now_time.hour } old {time_d.hour}")
         if (now_time.hour - time_d.hour) >= 1:
             print(first_day, time, last_data[first_day] )
             last_data[first_day].remove(time)
-        break
+        
     write_last_data(last_data)
+    
 
     # last_time = datetime.datetime.fromtimestamp(last_data["time"])
     # now_hour = now_time.hour
@@ -26,6 +28,7 @@ def check_existing_file(path_from_main_dir: str = ""):
     if not exists(path_file):
         with open(path_file, "w") as file:
             json.dump({}, file)
+        return False
    
     return True
 
