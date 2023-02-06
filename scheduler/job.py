@@ -27,13 +27,14 @@ async def add_user_checker(bot: Bot):
     first_day = list(new_datas.keys())[0]
     second_day = list(new_datas.keys())[1]
 
-    logging.debug(f"\nnew_data {new_datas[first_day]}\nlast_data {f.get_last_data()[first_day]}\n{type(new_data)}")
 
     
     if f.check_existing_file("data/last_data.json"):
         f.del_old_day(first_day)
         f.add_new_day(new_datas)
         f.delete_previous_hour(first_day)
+    
+    logging.debug(f"\nnew_data {new_datas[first_day]}\nlast_data {f.get_last_data()[first_day]}\n{type(new_data)}")
 
     for key, new_data in new_datas.items():
 
