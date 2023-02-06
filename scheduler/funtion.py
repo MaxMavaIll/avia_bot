@@ -1,13 +1,14 @@
 import json, datetime, logging
 from os.path import abspath, exists
+import pytz
 
 def delete_previous_hour( first_day: str|int):
     last_data = get_last_data()
-    now_time = datetime.datetime.now()
+    now_time = datetime.datetime.now(pytz.timezone("Europe/Kyiv"))
     
     for time in list(last_data[first_day]):
         time_d = datetime.datetime.utcfromtimestamp(time)
-        logging.debug(f"new {now_time.hour} old {time_d.hour}")
+        logging.debug(f"now {now_time.hour} old {time_d.hour}")
         if (now_time.hour - time_d.hour) >= 1:
             print(first_day, time, last_data[first_day] )
             last_data[first_day].remove(time)
@@ -73,7 +74,7 @@ def create_dict(key, all_data, value):
     # a["time"] = time
 
 def add_last_update_time(all_data: dict):
-    time = datetime.datetime.now()
+    time = datetime.datetime.now(pytz.timezone("Europe/Kyiv"))
     time = datetime.datetime.timestamp(time)
     all_data["time"] = time
 
