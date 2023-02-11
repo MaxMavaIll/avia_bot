@@ -95,11 +95,10 @@ def add_new_day(new_data: list):
 
                 if type(new_data[mass[index * -1]]) == type(dict()):
                     logging.debug(f"* {new_data[mass[index * -1]]}")
-                    new_data[mass[index * -1]] = list(new_data[mass[index * -1]].values())
-                    
-                logging.debug(f"* {new_data[mass[index * -1]]}")
-
-                last_data[mass[index * -1]] = new_data[mass[index * -1]] 
+                    last_data[mass[index * -1]] = list(new_data[mass[index * -1]].values())
+                
+                else:    
+                    last_data[mass[index * -1]] = new_data[mass[index * -1]] 
             
             last_data["time"] = time
             write_last_data(last_data)
