@@ -83,16 +83,21 @@ def add_new_day(new_data: list):
     last_data = get_last_data()
     time = last_data["time"]
     del last_data["time"]
-    if type(new_data) == type(dict):
-        new_data = list(new_data.values())
     key_last_data = list(last_data.keys())[-1]
     keys_new_data = list(new_data.keys())
     mass = []
     
     for index_last_day in range(1, len(new_data)+1):
+
         if keys_new_data[index_last_day * -1] == key_last_data:
+
             for index in range(1, index_last_day):
+
+                if type(new_data[mass[index * -1]]) == type(dict()):
+                    new_data[mass[index * -1]] = list(new_data[mass[index * -1]].values())
+                
                 last_data[mass[index * -1]] = new_data[mass[index * -1]] 
+            
             last_data["time"] = time
             write_last_data(last_data)
             return

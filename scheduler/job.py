@@ -43,7 +43,7 @@ async def add_user_checker(bot: Bot):
                 logging.debug(f"new_data {type(new_data)}")
                 new_data = list(new_data.values())
 
-            logging.debug(f"\nnew_data {new_datas[first_day]}\nlast_data {f.get_last_data()[first_day]}\n{type(new_data)}")
+            logging.debug(f"\nnew_data {new_data}\n{type(new_data)}")
 
 
             time = f.new_registri_time(new_data, key)
