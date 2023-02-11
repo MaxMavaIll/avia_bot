@@ -34,45 +34,53 @@ async def add_user_checker(bot: Bot):
         f.add_new_day(new_datas)
         f.delete_previous_hour(first_day)
         logging.debug(f"\nnew_data {new_datas[first_day]}\nlast_data {f.get_last_data()[first_day]}\n{type(new_data)}")
-
-    for key, new_data in new_datas.items():
-
-
-        if type(new_data) == type(dict()):
-            logging.debug(f"new_data {type(new_data)}")
-            new_data = list(new_data.values())
-
     
-
-        time = f.new_registri_time(new_data, key)
-        if time:
-            for t in time:
-                t = datetime.utcfromtimestamp(t).strftime("%d.%m.%Y o %H:%M")
-                m = env.tg_bot.admin_ids
-                for id in env.tg_bot.admin_ids:
-                    if id in env.tg_bot.get_all_time:
-                        logging.info(f"I sent admin with id: {id}")
-                        
-                        text = f"""
-                        Шановний клієнте, дякуємо за  замовлення польоту на авіасимуляторі <b>Боїнг 737</b>!\nЧекаємо Вас {t} за адресою: вул. Герцена, 35.\nБажаємо гарного відпочинку та приємних вражень! 
-                        """
-                        message_bot = await bot.send_message(id, text)
-                    elif key in [first_day, second_day]:
-                        logging.info(f"I sent admin with id: {id}")
-                        first_day = await bot.send_message(id, f"Хтось записався на <b>{t}</b>")
+    try: 
+        for key, new_data in new_datas.items():
 
 
-                    # message_bot = await bot.send_message(id, f"Хтось записався на <b>{t}</b>")
-                    # await asyncio.sleep(time_del_message)
-                    # await bot.delete_message(chat_id=message_bot.chat.id, message_id=message_bot.message_id)
-        else:
-            logging.info(f"{key} it`s ok")
+            if type(new_data) == type(dict()):
+                logging.debug(f"new_data {type(new_data)}")
+                new_data = list(new_data.values())
+
+            logging.debug(f"\nnew_data {new_datas[first_day]}\nlast_data {f.get_last_data()[first_day]}\n{type(new_data)}")
 
 
-        f.create_dict(key, new_datas, new_data) # Перезапис 
-        # delete_previous_hour(key)
-    f.add_last_update_time(new_datas) # Додавання часу коли була зроблена запис
-    # del_old_day()
-    with open('data/last_data.json', "w") as file:
-        json.dump(new_datas, file)
+            time = f.new_registri_time(new_data, key)
+            
+            logging.debug(f"time {time}")
+            
+            if time:
+                for t in time:
+                    t = datetime.utcfromtimestamp(t).strftime("%d.%m.%Y o %H:%M")
+                    m = env.tg_bot.admin_ids
+                    for id in env.tg_bot.admin_ids:
+                        if id in env.tg_bot.get_all_time:
+                            logging.info(f"I sent admin with id: {id}")
+                            
+                            text = f"""
+                            Шановний клієнте, дякуємо за  замовлення польоту на авіасимуляторі <b>Боїнг 737</b>!\nЧекаємо Вас {t} за адресою: вул. Герцена, 35.\nБажаємо гарного відпочинку та приємних вражень! 
+                            """
+                            message_bot = await bot.send_message(id, text)
+                        elif key in [first_day, second_day]:
+                            logging.info(f"I sent admin with id: {id}")
+                            first_day = await bot.send_message(id, f"Хтось записався на <b>{t}</b>")
 
+
+                        # message_bot = await bot.send_message(id, f"Хтось записався на <b>{t}</b>")
+                        # await asyncio.sleep(time_del_message)
+                        # await bot.delete_message(chat_id=message_bot.chat.id, message_id=message_bot.message_id)
+            else:
+                logging.info(f"{key} it`s ok")
+
+
+            f.create_dict(key, new_datas, new_data) # Перезапис 
+            # delete_previous_hour(key)
+        f.add_last_update_time(new_datas) # Додавання часу коли була зроблена запис
+        # del_old_day()
+        with open('data/last_data.json', "w") as file:
+            json.dump(new_datas, file)
+    except:
+        with open('data/last_data.json', "w") as file:
+            json.dump(new_datas, file)
+        
