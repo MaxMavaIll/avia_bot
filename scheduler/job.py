@@ -80,7 +80,9 @@ async def add_user_checker(bot: Bot):
         # del_old_day()
         with open('data/last_data.json', "w") as file:
             json.dump(new_datas, file)
-    except:
+    except Exception as err:
+        logging.error(f"I get this problem:\n{err}\nI overwrite last_data.json")
+
         with open('data/last_data.json', "w") as file:
             json.dump(new_datas, file)
         
